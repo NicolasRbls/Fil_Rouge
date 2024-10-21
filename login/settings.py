@@ -34,6 +34,10 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
+AUTH_USER_MODEL = 'accounts.User'
+LOGIN_REDIRECT_URL = '/inventaire/'
+
+
 
 INSTALLED_APPS = [
     'accounts',
@@ -133,3 +137,11 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTHENTICATION_BACKENDS = [
+    'accounts.backends.EmailBackend',  # Ajout du backend personnalisé
+    'django.contrib.auth.backends.ModelBackend',  # Garder le backend par défaut
+]
+
+LOGOUT_REDIRECT_URL = 'login'  # Redirige vers la page de connexion après la déconnexion
+

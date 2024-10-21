@@ -14,17 +14,27 @@ h1 {
     font-size: 2.5em;
 }
 
-/* Style pour le lien d'ajout d'objet */
-a {
+/* Conteneur pour les boutons "Ajouter" et "Déconnexion" */
+.buttons-container {
+    display: flex;
+    justify-content: space-between; /* Met les boutons aux extrémités */
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Style pour les boutons */
+button, a {
     text-decoration: none;
     color: white;
     background-color: #007BFF;
     padding: 10px 15px;
     border-radius: 5px;
     font-weight: bold;
+    cursor: pointer;
+    border: none;
 }
 
-a:hover {
+button:hover, a:hover {
     background-color: #0056b3;
 }
 

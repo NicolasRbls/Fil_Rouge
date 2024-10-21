@@ -3,38 +3,51 @@ from .models import User
 from .forms import LoginForm, RegisterForm
 from django.contrib import messages
 from inventaire.models import Objet
+from django.contrib.auth import authenticate, login
+
 
 def register_view(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)  # Ne pas encore sauvegarder l'utilisateur
-            # Le champ user_compte_id sera généré automatiquement
-            user.save()  # Sauvegarde de l'utilisateur avec la logique définie dans models.py
+            user.set_password(form.cleaned_data['user_password'])  # Hache le mot de passe
+            user.save()  # Sauvegarde de l'utilisateur
             messages.success(request, "Inscription réussie ! Vous pouvez vous connecter.")
             return redirect('login')
     else:
         form = RegisterForm()
     return render(request, 'accounts/register.html', {'form': form})
 
+
 def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            login = form.cleaned_data['user_login']
+            email = form.cleaned_data['email']
             password = form.cleaned_data['user_password']
-            try:
-                user = User.objects.get(user_login=login, user_password=password)
-
-                # Si l'utilisateur est trouvé, il est connecté
-                messages.success(request, f"Bienvenue {user.user_login}")
-                return redirect('home')  # Redirige vers la page d'accueil ou tableau de bord
-            except User.DoesNotExist:
-                messages.error(request, "Mauvais login ou mot de passe")
+            user = authenticate(request, username=email, password=password)  # Utilisation de username=email
+            if user is not None:
+                if user.is_active:  # Vérifie que l'utilisateur est actif
+                    login(request, user)
+                    messages.success(request, f"Bienvenue {user.user_login}")
+                    return redirect('home')
+                else:
+                    messages.error(request, "Votre compte est inactif.")
+            else:
+                messages.error(request, "Email ou mot de passe incorrect.")
     else:
         form = LoginForm()
     return render(request, 'accounts/login.html', {'form': form})
 
+
 def home_view(request):
-    objets = Objet.objects.all()
+    # Filtrer les objets en fonction de l'utilisateur connecté
+    if request.user.is_authenticated:
+        objets = Objet.objects.filter(user=request.user)  # Seuls les objets de l'utilisateur connecté
+    else:
+        objets = []  # Aucun objet si l'utilisateur n'est pas connecté
+
     return render(request, 'inventaire/objet_list.html', {'objets': objets})
+
+

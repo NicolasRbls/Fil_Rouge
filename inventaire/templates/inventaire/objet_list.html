@@ -5,15 +5,26 @@
     <link rel="stylesheet" href="{% static 'inventaire/css/list.css' %}">
     <title>Inventaire</title>
 </head>
-<h1>Inventaire</h1>
-<a href="{% url 'objet_create' %}">Ajouter un objet</a>
-<ul>
-    {% for objet in objets %}
-        <li>{{ objet.nom }} - {{ objet.type_objet }} - Quantité: {{ objet.quantite }}
-            <a href="{% url 'objet_update' objet.pk %}">Modifier</a> |
-            <a href="{% url 'objet_delete' objet.pk %}">Supprimer</a>
-        </li>
-    {% endfor %}
-</ul>
+<body>
+    <h1>Inventaire</h1>
 
+    <div class="buttons-container">
+        <a href="{% url 'objet_create' %}">Ajouter un objet</a>
+
+        <form method="POST" action="{% url 'logout' %}" style="margin: 0;">
+            {% csrf_token %}
+            <button type="submit">Déconnexion</button>
+        </form>
+    </div>
+
+    <ul>
+        {% for objet in objets %}
+            <li>{{ objet.nom }} - {{ objet.type_objet }} - Quantité: {{ objet.quantite }}
+                <a href="{% url 'objet_update' objet.pk %}">Modifier</a> |
+                <a href="{% url 'objet_delete' objet.pk %}">Supprimer</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+</body>
 </html>

@@ -15,7 +15,8 @@ body {
 /* div container */
 div {
     background-color: white;
-    padding: 20px;
+    padding-right: 20px;
+    padding-left: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     max-width: 400px;
